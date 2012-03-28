@@ -11,7 +11,7 @@ Void main()
 	a = {"b", "c", "e"}
 	foreach String s in a
 		print s
-	if a is equals "c"
+	if a is equals list
 		print a
 	if a is contains "a"
 		print list

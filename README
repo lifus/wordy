@@ -1,7 +1,7 @@
 == What's this?
 
 This is realization of small dsl, that targeted to work with lists(vectors).
-Antlr (http://www.antlr.org/), string templates (http://www.stringtemplate.org/) and Jasmine language was used here.
+ANTLR (http://www.antlr.org/), string templates (http://www.stringtemplate.org/) and Jasmine language was used here.
 
 == 'Features' of dsl
 
@@ -64,8 +64,13 @@ Options:
 If file would compile successfully, you will found jar file, you could execute it:
 $ java -jar <path_to_file>.jar
 
+== Notes
+
+When creating jar file in eclipse, do the following: File->Export->Java->Runnable JAR file
+Then choose 'package required libraries into generated JAR'. It will make single portable jar
+
 == Afterword
 
-I wrote that code a year ago. Its not very clean. 
+I wrote that code a year ago. Its not very clean.
 But i think it could be helpful for anyone, who starts to learn antlr, want to use AST, string templates.
-
+Also, read the Terence Parr's 'The Definitive ANTLR Reference'. Great book, it will explain you how to do some cool stuff with ANTLR
