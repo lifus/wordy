@@ -1,0 +1,9 @@
+Void printList(List list)
+	print list
+	foreach String s in list
+		print s
+
+Void main()
+	List l
+	l = {"a", "b"}
+	printList(l)

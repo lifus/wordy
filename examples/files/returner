@@ -1,0 +1,10 @@
+
+Void main()
+	List l
+	l = {"a", "b"}
+	l = returnList(l)
+	print l
+	
+List returnList(List list)
+	"c" add to list
+	return list

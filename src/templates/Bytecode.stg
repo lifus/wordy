@@ -1,0 +1,275 @@
+group Bytecode;
+
+program(globals, mainBody, functions, init) ::= <<
+.class public Wrapper
+.super java/lang/Object
+
+<globals; separator="\n">
+
+.method public <init>()V
+   aload_0
+   invokespecial java/lang/Object/<init>()V
+   return
+.end method
+
+.method public static main([Ljava/lang/String;)V
+;создаем экземпляр самого класса-оболочки
+;(сделано для вызова нестатических методов и полей класса
+;избавляет от ошибок статической инициализации)
+   .limit stack 2
+   .limit locals 2 ; how many locals do we need?
+   new Wrapper
+   dup
+   invokespecial Wrapper/<init>()V
+   astore_1
+   aload_1
+   invokevirtual Wrapper/start()V
+   return
+.end method
+
+.method start()V
+    .limit stack <maxStackDepth>
+    .limit locals <maxLocals>
+    <mainBody>
+    return
+.end method
+
+<functions; separator="\n">
+>>
+
+function(retType, name, parameters, maxStackDepth, maxLocals, content) ::= <<
+.method <name>(<parameters; separator=", ">)<retType>
+   .limit stack <maxStackDepth>
+   .limit locals <maxLocals>
+   <content>
+.end method
+>>
+
+returnObject(returnable) ::= <<
+<returnable>
+areturn
+>>
+
+returnVoid() ::= <<
+return
+>>
+
+block(content) ::= <<
+  <content; separator="\n">
+>>
+
+variable(type,name) ::= ""
+
+parameter(type,name) ::= "<type>"
+
+globalVariable(type,name) ::= ".field private <name> <type>"
+
+type_String() ::= "Ljava/lang/String;"
+
+type_List() ::= "Ljava/util/ArrayList;"
+
+type_Void() ::= "V"
+
+varRef(id, varNum) ::= "aload <varNum> ; <id>"
+
+globRef(id, typeWholePath) ::= <<
+aload_0
+getfield Wrapper/<id> <typeWholePath>
+>>
+
+string(value) ::= "ldc <value>"
+
+assignVar(varNum,v,id) ::= <<
+<v>
+astore <varNum> ; <id>
+>>
+
+assignGlob(v,id,fullType,type) ::= <<
+aload_0
+new <type>
+dup
+invokespecial <type>/<init>()V
+putfield Wrapper/<id> <fullType>
+aload_0
+<v>
+putfield Wrapper/<id> <fullType>
+>>
+
+printVar(varNum) ::= <<
+getstatic java/lang/System/out Ljava/io/PrintStream;
+aload <varNum>
+invokevirtual java/io/PrintStream/print(Ljava/lang/Object;)V
+>>
+
+printGlob(id, type) ::= <<
+getstatic java/lang/System/out Ljava/io/PrintStream;
+aload_0
+getfield Wrapper/<id> <type>
+invokevirtual java/io/PrintStream/print(Ljava/lang/Object;)V
+>>
+
+removeAt(target, position) ::= <<
+<target>
+bipush  <position>
+invokeinterface java/util/List/remove(I)Ljava/lang/Object; 2
+pop
+>>
+
+removeFrom(target, subject) ::= <<
+<target>
+<subject>
+invokeinterface java/util/List/remove(Ljava/lang/Object;)Z 2
+pop
+>>
+
+add(target, subject) ::= <<
+<target>
+<subject>
+invokeinterface java/util/List/add(Ljava/lang/Object;)Z 2
+pop
+>>
+
+getAt(target, position) ::= <<
+<target>
+bipush  <position>
+invokeinterface java/util/List/get(I)Ljava/lang/Object; 2
+>>
+
+not_contains(verifiable, checking, opNum) ::= <<
+<verifiable>
+<checking>
+invokeinterface java/util/List/contains(Ljava/lang/Object;)Z 2
+ifne contains<opNum>
+iconst_1 ; true
+goto end<opNum>
+contains<opNum>:
+iconst_0 ; false
+end<opNum>:
+>>
+
+contains(verifiable, checking, opNum) ::= <<
+<verifiable>
+<checking>
+invokeinterface java/util/List/contains(Ljava/lang/Object;)Z 2
+ifeq notContains<opNum>
+iconst_1 ; true
+goto end<opNum>
+notContains<opNum>:
+iconst_0 ; false
+end<opNum>:
+>>
+
+equals(verifiable, checking, opNum) ::= <<
+<verifiable>
+<checking>
+invokevirtual java/lang/Object/equals(Ljava/lang/Object;)Z
+ifeq notEquals<opNum>
+iconst_1 ; true
+goto end<opNum>
+notEquals<opNum>:
+iconst_0 ; false
+end<opNum>:
+>>
+
+not_equals(verifiable, checking, opNum) ::= <<
+<verifiable>
+<checking>
+invokevirtual java/lang/Object/equals(Ljava/lang/Object;)Z
+ifne equals<opNum>
+iconst_1 ; true
+goto end<opNum>
+equals<opNum>:
+iconst_0 ; false
+end<opNum>:
+>>
+
+if(conclusion, containment, opNum) ::= <<
+<conclusion>
+iconst_1
+if_icmpne notCorrect<opNum>
+<containment>
+notCorrect<opNum>:
+>>
+
+while(condition, containment, opNum) ::= <<
+rewind<opNum>:
+<condition>
+iconst_1
+if_icmpne notCorrect<opNum>
+<containment>
+goto rewind<opNum>
+notCorrect<opNum>:
+>>
+
+foreachVar(iterableNum, iteratorNum, variable, varNum, containment, opNum) ::= <<
+aload <iterableNum>
+invokeinterface java/util/List/iterator()Ljava/util/Iterator; 1
+astore <iteratorNum>
+rewindIterator<opNum>:
+aload <iteratorNum>
+invokeinterface java/util/Iterator/hasNext()Z 1
+ifeq break<opNum>
+aload <iteratorNum>
+invokeinterface java/util/Iterator/next()Ljava/lang/Object; 1
+checkcast java/lang/String
+astore <varNum>
+<containment>
+goto rewindIterator<opNum>
+break<opNum>:
+>>
+
+foreachGlob(iterableName, iteratorNum, variable, varNum, containment, opNum) ::= <<
+aload_0
+getfield Wrapper/<iterableName> Ljava/util/ArrayList;
+invokeinterface java/util/List/iterator()Ljava/util/Iterator; 1
+astore <iteratorNum>
+rewindIterator<opNum>:
+aload <iteratorNum>
+invokeinterface java/util/Iterator/hasNext()Z 1
+ifeq break<opNum>
+aload <iteratorNum>
+invokeinterface java/util/Iterator/next()Ljava/lang/Object; 1
+checkcast java/lang/String
+astore <varNum>
+<containment>
+goto rewindIterator<opNum>
+break<opNum>:
+>>
+
+call(retType, funcName, params, paramTypes) ::= <<
+aload_0
+<params; separator="\n">
+invokevirtual Wrapper/<funcName>(<paramTypes; separator=", ">)<retType>
+>>
+
+createLocalList(elements, varNum) ::= <<
+new java/util/ArrayList
+dup
+invokespecial java/util/ArrayList/<init>()V
+astore <varNum>
+<elements:{<addLocalElement(element=it, variableNum=varNum)>};separator="\n">
+>>
+
+createGlobalList(elements, globName) ::= <<
+aload_0
+new java/util/ArrayList
+dup
+invokespecial java/util/ArrayList/<init>()V
+putfield Wrapper/<globName> Ljava/util/ArrayList;
+<elements:{<addGlobalElement(element=it, globalName=globName)>};separator="\n">
+>>
+
+addLocalElement(element, variableNum) ::= <<
+aload <variableNum>
+ldc <element>
+invokeinterface java/util/List/add(Ljava/lang/Object;)Z 2
+pop
+>>
+
+addGlobalElement(element, globalName) ::= <<
+aload_0
+getfield Wrapper/<globalName> Ljava/util/ArrayList;
+ldc <element>
+invokeinterface java/util/List/add(Ljava/lang/Object;)Z 2
+pop
+>>

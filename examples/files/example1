@@ -1,0 +1,22 @@
+List a
+Void main()
+	List list
+	list = { "text1", "text2" }
+	list remove at position 1
+	print a
+	"text1" remove at list
+	a = {"a"}
+	print a
+	List a
+	a = {"b", "c", "e"}
+	foreach String s in a
+		print s
+	if a is equals "c"
+		print a
+	if a is contains "a"
+		print list
+	a = {"e", 
+	     "m"}
+	while a is contains "e"
+		"e" remove at a
+		print a

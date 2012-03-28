@@ -1,0 +1,53 @@
+List working_list
+String listAnnotation
+String newLine
+Void main()
+	setUp()
+	removeTest()
+	addTest()
+	getTest()
+
+Void setUp()
+	newLine = "\n"
+	String beginning 
+	beginning = "Originnaly list contains: "
+	print beginning
+	working_list = {"a", "b", "c"}
+	foreach String s in working_list
+		print s
+	print newLine
+
+Void removeTest()
+	String removeTestAnnotation
+	removeTestAnnotation = "Trying to remove 'a' and 'b'"
+	print removeTestAnnotation
+	print newLine
+	
+	"a" remove at working_list
+	working_list remove at position 0
+	printList()
+	
+Void addTest()
+	String addTestAnnotation
+	addTestAnnotation = "Trying to add 'd'"
+	print addTestAnnotation
+	print newLine
+	
+	"d" add to working_list
+	printList()
+	
+Void getTest()
+	String getTestAnnotation
+	getTestAnnotation = "Trying to get element at position '1': "
+	print getTestAnnotation
+	
+	String result 
+	result = working_list get at position 1
+	print result
+	
+Void printList()
+	listAnnotation = "Now this list contains: "
+	print listAnnotation
+	foreach String s in working_list
+		print s
+	print newLine

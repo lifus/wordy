@@ -1,0 +1,71 @@
+== What's this?
+
+This is realization of small dsl, that targeted to work with lists(vectors).
+Antlr (http://www.antlr.org/), string templates (http://www.stringtemplate.org/) and Jasmine language was used here.
+
+== 'Features' of dsl
+
+types:
+-Void (only for functions)
+-List
+-String
+
+statements:
+-foreach
+-if
+-while
+-return
+-assign
+
+structure of program:
+-blocks are distinguished, similar to python (tabs/whitespaces)
+-only possible entry point, similar to c (Void main())
+-you could call another functions, no mater where thay are - before or after current function
+-functions could return values
+-functions could take parameters
+-nested scopes of variables (shadowing works)
+
+error reporting:
+-syntax errors reporting
+-semantic errors reporting
+
+-console output
+-boolean expressions
+-list manipulation
+
+== Whats going on here?
+
+Roughly:
+Input file -> Lexical Analyzer(antlr) -> 
+Token Stream -> Syntax Parser(antlr) -> AST -> Semantic Analyzer -> Template generator(String template) ->
+Target Code generator(Jasmine) ->  Jar file
+
+Take a look at src/Tool.java
+
+== Structure
+
+|-- src               // All sorces
+  |   |-- templates   // String template 
+|-- src  
+  |   |-- files       // Examples of syntax
+  |   |-- output      // Produced jar files
+|-- bin               // Ready jar file
+|-- lib               // Necessary libs
+
+
+== Usage
+
+$ java -jar wordy.jar [-debug] <path_to_file>
+
+Options:
+    -debug
+    	Print syntax tree
+
+If file would compile successfully, you will found jar file, you could execute it:
+$ java -jar <path_to_file>.jar
+
+== Afterword
+
+I wrote that code a year ago. Its not very clean. 
+But i think it could be helpful for anyone, who starts to learn antlr, want to use AST, string templates.
+

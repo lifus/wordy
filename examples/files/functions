@@ -1,0 +1,16 @@
+String beforeMain()
+	String r
+	r = "string from 'beforeMain' function\n"
+	return r
+		
+Void main()
+	String result
+	result = beforeMain()
+	print result
+	result = afterMain()
+	print result
+	
+String afterMain()
+	String s
+	s = "string from 'afterMain' function"
+	return "string from 'afterMain' function\n"

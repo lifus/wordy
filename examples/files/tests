@@ -1,0 +1,63 @@
+List list
+String newLine
+String correct
+String incorrect
+Void main()
+	setUp()
+	testContains()
+	testNotContains()
+	testIsEquals()
+	testIsNotEquals()
+
+Void setUp()
+	newLine = "\n"
+	correct = "correct"
+	incorrect = "incorrect"
+	list = {"1", "2", "3"}
+	
+	String beginning 
+	beginning = "Originnaly list contains: "
+	
+	print beginning
+	print list
+	print newLine
+	
+Void testContains()
+	String testAnnotation
+	testAnnotation = "Testing 'is contains' operator result:"
+	print testAnnotation 
+	if list is contains "a"
+		print incorrect
+	if list is contains "1"
+		print correct
+	print newLine
+		
+Void testNotContains()
+	String testAnnotation
+	testAnnotation = "Testing 'is not contains' operator result:" 
+	print testAnnotation
+	if list is not contains "a"
+		print correct
+	if list is not contains "1"
+		print incorrect
+	print newLine
+	
+Void testIsEquals()
+	String testAnnotation
+	testAnnotation = "Testing 'is equals' operator result:" 
+	print testAnnotation
+	List comparable
+	comparable = {"1", "2", "3"}
+	if list is equals comparable
+		print correct
+	print newLine
+	
+Void testIsNotEquals()
+	String testAnnotation
+	testAnnotation = "Testing 'is not equals' operator result:" 
+	print testAnnotation
+	List notComparable
+	notComparable = {"1", "2"}
+	if list is not equals notComparable
+		print correct
+	print newLine
